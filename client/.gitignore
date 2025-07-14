@@ -21,3 +21,14 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+  
+
+
+  # borrow-it/client/.gitignore
+
+node_modules/
+.env
+build/
+dist/
+*.log
+.DS_Store
