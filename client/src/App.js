@@ -7,6 +7,8 @@ import ResetPasswordPage from './pages/ResetPasswordPage';
 import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
 import { Toaster } from 'react-hot-toast';
+import MyLoansPage from './pages/MyLoansPage';
+import RequestsToMePage from './pages/RequestsToMePage';
 
 // Items module
 import ItemListPage from './pages/ItemListPage';
@@ -21,6 +23,7 @@ function AppContent() {
     <>
       {!hideNavbar && <Navbar />}
       <Toaster position="top-center" />
+
       <Routes>
         {/* Auth Routes */}
         <Route path="/login" element={<LoginPage />} />
@@ -49,6 +52,9 @@ function AppContent() {
             </ProtectedRoute>
           }
         />
+        <Route path="/my-loans" element={<ProtectedRoute><MyLoansPage /></ProtectedRoute>} />
+<Route path="/loan-requests" element={<ProtectedRoute><RequestsToMePage /></ProtectedRoute>} />
+
       </Routes>
     </>
   );

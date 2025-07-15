@@ -16,3 +16,5 @@ input:-webkit-autofill {
   -webkit-text-fill-color: #000 !important;
 }
 
+@import "~slick-carousel/slick/slick.css";
+@import "~slick-carousel/slick/slick-theme.css";

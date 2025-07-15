@@ -1,45 +1,68 @@
 
+
 import React, { useState } from 'react';
 import {
   Box,
   Grid,
-  TextField,
-  MenuItem,
   Typography,
   Card,
   CardContent,
   CardMedia,
-  Chip,
   Pagination,
   Rating,
 } from '@mui/material';
 import { useGetItemsQuery } from '../features/items/itemApi';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
-const categories = ['All', 'Tools', 'Books', 'Appliances', 'Electronics', 'Others'];
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+
+
+const bannerImages = [
+  {
+    url: `${process.env.PUBLIC_URL}/tools.jpg`,
+    alt: 'Tools Banner',
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=1200&q=80',
+    alt: 'Books Banner',
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?auto=format&fit=crop&w=1200&q=80',
+    alt: 'Electronics Banner',
+  },
+];
+
+const sliderSettings = {
+  dots: true,
+  infinite: true,
+  autoplay: true,
+  speed: 500,
+  slidesToShow: 1,
+  slidesToScroll: 1,
+  arrows: false,
+};
 
 const ItemListPage = () => {
-  const [filters, setFilters] = useState({ zipCode: '', category: 'All' });
   const [page, setPage] = useState(1);
   const itemsPerPage = 6;
 
-  const queryParams = {
-    ...(filters.zipCode && { zipCode: filters.zipCode }),
-    ...(filters.category !== 'All' && { category: filters.category }),
-  };
+  const { zipCode, category } = useSelector((state) => state.filters);
+  const { data: items = [], isLoading, isError } = useGetItemsQuery();
 
-  const { data: items = [], isLoading, isError } = useGetItemsQuery(queryParams);
+  // 🔍 Filter logic
+  const filteredItems = items.filter((item) => {
+    const zipMatch = zipCode === '' || item.zipCode.includes(zipCode);
+    const categoryMatch = category === 'All' || item.category === category;
+    return zipMatch && categoryMatch;
+  });
 
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters((prev) => ({ ...prev, [name]: value }));
-    setPage(1);
-  };
+  const paginatedItems = filteredItems.slice((page - 1) * itemsPerPage, page * itemsPerPage);
+  const pageCount = Math.ceil(filteredItems.length / itemsPerPage);
 
-  const paginatedItems = items.slice((page - 1) * itemsPerPage, page * itemsPerPage);
-  const pageCount = Math.ceil(items.length / itemsPerPage);
-
-  const truncateText = (text, maxLength = 40) => {
+  const truncateText = (text, maxLength = 35) => {
     if (!text) return '';
     return text.length <= maxLength ? text : text.slice(0, maxLength) + '...';
   };
@@ -55,35 +78,27 @@ const ItemListPage = () => {
 
   return (
     <Box sx={{ p: 3, bgcolor: 'background.default', minHeight: '100vh' }}>
-      <Typography variant="h4" mb={2} color="primary.main">
-        Available Items
-      </Typography>
-
-      <Box sx={{ display: 'flex', gap: 2, mb: 4, flexWrap: 'wrap' }}>
-        <TextField
-          label="Zip Code"
-          name="zipCode"
-          value={filters.zipCode}
-          onChange={handleFilterChange}
-          size="small"
-        />
-        <TextField
-          label="Category"
-          name="category"
-          select
-          value={filters.category}
-          onChange={handleFilterChange}
-          size="small"
-          sx={{ minWidth: 160 }}
-        >
-          {categories.map((cat) => (
-            <MenuItem key={cat} value={cat}>
-              {cat}
-            </MenuItem>
+      {/* 🖼️ Banner Slider */}
+      <Box sx={{ mb: 4 }}>
+        <Slider {...sliderSettings}>
+          {bannerImages.map((img, i) => (
+            <Box key={i}>
+              <img
+                src={img.url}
+                alt={img.alt}
+                style={{
+                  width: '100%',
+                  height: '400px',
+                  objectFit: 'cover',
+                  borderRadius: '10px',
+                }}
+              />
+            </Box>
           ))}
-        </TextField>
+        </Slider>
       </Box>
 
+      {/* 📦 Item Listing */}
       {isLoading && <Typography>Loading items...</Typography>}
       {isError && <Typography color="error">Failed to load items</Typography>}
 
@@ -101,7 +116,6 @@ const ItemListPage = () => {
               to={`/items/${item._id}`}
               sx={{
                 width: 300,
-                height: '100%',
                 display: 'flex',
                 flexDirection: 'column',
                 textDecoration: 'none',
@@ -128,13 +142,21 @@ const ItemListPage = () => {
                 }}
               />
 
-              <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', gap: 1 }}>
+              {/* Date */}
+              <Box sx={{ px: 2, pt: 1, display: 'flex', justifyContent: 'flex-end' }}>
+                <Typography variant="caption" color="text.secondary">
+                  {formatDate(item.createdAt)}
+                </Typography>
+              </Box>
+
+              <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', gap: 1, pt: 0 }}>
                 <Typography
                   variant="h6"
                   sx={{
                     whiteSpace: 'nowrap',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
+                    color: 'text.primary',
                   }}
                 >
                   {item.title}
@@ -144,25 +166,13 @@ const ItemListPage = () => {
                   {truncateText(item.description)}
                 </Typography>
 
-            
-
-                <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mt: 1 }}>
-                  <Chip label={item.category} size="small" />
-                  <Chip label={item.zipCode} size="small" />
-                  {!item.available && <Chip label="Unavailable" color="warning" size="small" />}
-                </Box>
-
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
-                  <Rating
-                    value={item.rating || 0}
-                    precision={0.5}
-                    readOnly
-                    size="small"
-                  />
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Rating value={item.rating || 0} precision={0.5} readOnly size="small" />
                   <Typography variant="caption" color="text.secondary">
-                    {formatDate(item.createdAt)}
+                    {item.zipCode}
                   </Typography>
                 </Box>
+
               </CardContent>
             </Card>
           </Grid>

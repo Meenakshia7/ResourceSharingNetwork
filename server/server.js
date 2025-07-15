@@ -18,11 +18,15 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Routes
 const uploadRoutes = require('./routes/upload');
 const authRoutes = require('./routes/auth');
-const itemRoutes = require('./routes/item'); 
+const itemRoutes = require('./routes/item');
+const loanRoutes = require('./routes/loan'); 
+const reviewRoutes = require('./routes/review');
 
 app.use('/api/upload', uploadRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/items', itemRoutes);
+app.use('/api/loans', loanRoutes);
+app.use('/api/reviews', reviewRoutes);
 
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI, {
