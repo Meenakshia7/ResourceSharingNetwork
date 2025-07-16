@@ -7,12 +7,14 @@ import filterReducer from '../features/filters/filterSlice';
 import { loanApi } from '../features/loan/loanApi';
 import { reviewApi } from '../features/review/reviewApi';
 import reviewReducer from '../features/review/reviewSlice';
+import wishlistReducer from '../features/wishlist/wishlistSlice';
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     filters: filterReducer, 
     review: reviewReducer,
+    wishlist: wishlistReducer,
     [authApi.reducerPath]: authApi.reducer,
     [itemApi.reducerPath]: itemApi.reducer,
     [loanApi.reducerPath]: loanApi.reducer,

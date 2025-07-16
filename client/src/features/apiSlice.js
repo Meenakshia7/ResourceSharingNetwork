@@ -1,8 +1,8 @@
-// src/features/apiSlice.js
+
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const apiSlice = createApi({
-  reducerPath: 'reviewApi', // unique name
+  reducerPath: 'reviewApi', 
   baseQuery: fetchBaseQuery({
     baseUrl: '/api',
     prepareHeaders: (headers, { getState }) => {

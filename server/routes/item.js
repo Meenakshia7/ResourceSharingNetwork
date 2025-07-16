@@ -11,5 +11,7 @@ router.get('/:id', itemController.getItemById);
 router.post('/', protect , itemController.createItem);
 router.put('/:id', protect , itemController.updateItem);
 router.delete('/:id', protect , itemController.deleteItem);
+router.get('/my', protect , itemController.getMyItems);
+
 
 module.exports = router;

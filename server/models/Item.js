@@ -1,3 +1,4 @@
+
 const mongoose = require('mongoose');
 
 const itemSchema = new mongoose.Schema({
@@ -9,6 +10,16 @@ const itemSchema = new mongoose.Schema({
   zipCode: { type: String, required: true },
   available: { type: Boolean, default: true },
   createdAt: { type: Date, default: Date.now },
+}, {
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true },
+});
+
+// ✅ Virtual field for reviews
+itemSchema.virtual('reviews', {
+  ref: 'Review',
+  localField: '_id',
+  foreignField: 'item',
 });
 
 const Item = mongoose.model('Item', itemSchema);

@@ -1,3 +1,4 @@
+
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { setCredentials } from './authSlice';
 
@@ -23,6 +24,7 @@ export const authApi = createApi({
         dispatch(setCredentials({ user: data, token: data.token }));
       },
     }),
+
     login: builder.mutation({
       query: (data) => ({
         url: '/auth/login',
@@ -34,7 +36,19 @@ export const authApi = createApi({
         dispatch(setCredentials({ user: data, token: data.token }));
       },
     }),
+
+    changePassword: builder.mutation({
+      query: (data) => ({
+        url: '/auth/change-password',
+        method: 'POST',
+        body: data,
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation, useRegisterMutation } = authApi;
+export const {
+  useLoginMutation,
+  useRegisterMutation,
+  useChangePasswordMutation, // ✅ export the new mutation
+} = authApi;

@@ -1,4 +1,6 @@
+
 const Item = require('../models/Item');
+
 
 // Create new item
 exports.createItem = async (req, res) => {
@@ -14,18 +16,23 @@ exports.createItem = async (req, res) => {
   }
 };
 
-// Get all items (with optional filters)
 exports.getAllItems = async (req, res) => {
   try {
-    const { zipCode, category } = req.query;
-    const filter = {};
-    if (zipCode) filter.zipCode = zipCode;
-    if (category) filter.category = category;
+    const items = await Item.find()
+      .populate('owner', 'name') // optional, if you need owner name
+      .populate({
+        path: 'reviews',
+        select: 'rating comment reviewer createdAt',
+        populate: {
+          path: 'reviewer',
+          select: 'name',
+        },
+      });
 
-    const items = await Item.find(filter).populate('owner', 'name email');
-    res.status(200).json(items);
-  } catch (error) {
-    res.status(500).json({ message: 'Failed to fetch items', error: error.message });
+    res.json(items);
+  } catch (err) {
+    console.error('[getAllItems ERROR]', err);
+    res.status(500).json({ message: 'Failed to fetch items' });
   }
 };
 
@@ -55,16 +62,44 @@ exports.updateItem = async (req, res) => {
   }
 };
 
-// Delete item (only owner)
+// Delete item (only if no active loan)
 exports.deleteItem = async (req, res) => {
   try {
-    const deletedItem = await Item.findOneAndDelete({
-      _id: req.params.id,
-      owner: req.user.id,
+    const { id } = req.params;
+
+    // 1. Check if item belongs to the user
+    const item = await Item.findOne({ _id: id, owner: req.user.id });
+    if (!item) return res.status(403).json({ message: 'Unauthorized or item not found' });
+
+    // 2. Check for active (non-returned) loans
+    const activeLoan = await Loan.findOne({
+      item: id,
+      status: { $ne: 'returned' }, // not returned yet
     });
-    if (!deletedItem) return res.status(403).json({ message: 'Unauthorized or item not found' });
+
+    if (activeLoan) {
+      return res.status(400).json({
+        message: 'Item cannot be deleted. It has an active loan request.',
+      });
+    }
+
+    // 3. Delete the item if no active loan
+    await item.deleteOne();
     res.status(200).json({ message: 'Item deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Failed to delete item', error: error.message });
   }
 };
+
+
+
+// Get logged-in user's items
+exports.getMyItems = async (req, res) => {
+  try {
+    const myItems = await Item.find({ owner: req.user.id });
+    res.status(200).json(myItems);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch your items', error: error.message });
+  }
+};
+

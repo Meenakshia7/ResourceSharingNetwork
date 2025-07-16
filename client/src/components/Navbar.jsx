@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import {
   AppBar,
-  Toolbar,
   Typography,
   Button,
   Box,
@@ -14,12 +13,14 @@ import {
   Divider,
   TextField,
   CircularProgress,
+  Badge,
 } from '@mui/material';
 import {
   Handshake as HandshakeIcon,
   Person as PersonIcon,
   LockReset,
   Logout,
+  Favorite,
 } from '@mui/icons-material';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
@@ -31,17 +32,21 @@ const categories = ['All', 'Tools', 'Books', 'Appliances', 'Electronics', 'Other
 const Navbar = () => {
   const { user } = useSelector((state) => state.auth);
   const { zipCode, category } = useSelector((state) => state.filters);
+  const wishlistItems = useSelector((state) => state.wishlist.items);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [loanMenuEl, setLoanMenuEl] = useState(null);
+  const [itemMenuEl, setItemMenuEl] = useState(null);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleMenuOpen = (e) => setAnchorEl(e.currentTarget);
   const handleMenuClose = () => setAnchorEl(null);
   const handleLoanMenuOpen = (e) => setLoanMenuEl(e.currentTarget);
   const handleLoanMenuClose = () => setLoanMenuEl(null);
+  const handleItemMenuOpen = (e) => setItemMenuEl(e.currentTarget);
+  const handleItemMenuClose = () => setItemMenuEl(null);
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
@@ -60,120 +65,121 @@ const Navbar = () => {
   const getInitial = (name) => (name ? name.trim().charAt(0).toUpperCase() : '?');
 
   return (
-    <AppBar position="static" color="primary" sx={{ px: 2 }}>
-      <Toolbar
-        disableGutters
+    <AppBar position="sticky" color="primary" sx={{ zIndex: 1200, width: '100%' }}>
+      <Box
+        component="nav"
         sx={{
-          width: '100%',
-          overflowX: 'auto',
-          whiteSpace: 'nowrap',
-          flexWrap: 'nowrap',
           display: 'flex',
+          flexDirection: 'row',
           alignItems: 'center',
+          gap: 1.5,
           px: 2,
-          gap: 2,
-
-          
-          scrollbarWidth: 'none', 
-          '&::-webkit-scrollbar': {
-            display: 'none', 
-          },
+          py: 1,
+          flexWrap: 'nowrap',
+          overflow: 'hidden',
         }}
       >
-
-
-        {/* LOGO + FILTERS */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexShrink: 0 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mr: 2, flexShrink: 0 }}>
-            <HandshakeIcon sx={{ fontSize: 34, color: 'white' }} />
-            <Typography
-              component={Link}
-              to="/"
-              variant="h6"
-              sx={{
-                fontWeight: 'bold',
-                color: 'white',
-                textDecoration: 'none',
-                fontFamily: 'Segoe UI, sans-serif',
-                flexShrink: 0,
-              }}
-            >
-              
-            </Typography>
-          </Box>
-
-          <TextField
-            name="zipCode"
-            value={zipCode}
-            onChange={handleFilterChange}
-            placeholder="Zip Code"
-            size="small"
-            variant="outlined"
+        {/* Logo */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexShrink: 1 }}>
+          <HandshakeIcon sx={{ fontSize: 30, color: 'white' }} />
+          <Typography
+            component={Link}
+            to="/"
+            variant="h6"
             sx={{
-              bgcolor: 'white',
-              borderRadius: 1,
-              minWidth: 120,
-              width: 300,
-              flexShrink: 0,
+              color: 'white',
+              fontWeight: 'bold',
+              textDecoration: 'none',
+              flexShrink: 1,
             }}
-            InputProps={{ sx: { fontSize: 14 } }}
-          />
-
-          <TextField
-            name="category"
-            select
-            value={category}
-            onChange={handleFilterChange}
-            size="small"
-            variant="outlined"
-            sx={{
-              bgcolor: 'white',
-              borderRadius: 1,
-              minWidth: 160,
-              width: 500,
-              flexShrink: 0,
-            }}
-            InputProps={{ sx: { fontSize: 14 } }}
           >
-            {categories.map((cat) => (
-              <MenuItem key={cat} value={cat}>
-                {cat}
-              </MenuItem>
-            ))}
-          </TextField>
+            Borrow It
+          </Typography>
         </Box>
 
-        
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, ml: 'auto', flexShrink: 0 }}>
-          {user && (
+        {/* Filters */}
+        <TextField
+          name="zipCode"
+          value={zipCode}
+          onChange={handleFilterChange}
+          placeholder="Zip Code"
+          size="small"
+          variant="outlined"
+          sx={{
+            bgcolor: 'white',
+            borderRadius: 1,
+            minWidth: 80,
+            maxWidth: 350,
+            flexShrink: 1,
+            flexGrow: 1,
+          }}
+        />
+        <TextField
+          name="category"
+          select
+          value={category}
+          onChange={handleFilterChange}
+          size="small"
+          variant="outlined"
+          sx={{
+            bgcolor: 'white',
+            borderRadius: 1,
+            minWidth: 100,
+            maxWidth: 500,
+            flexShrink: 1,
+            flexGrow: 1,
+          }}
+        >
+          {categories.map((cat) => (
+            <MenuItem key={cat} value={cat}>
+              {cat}
+            </MenuItem>
+          ))}
+        </TextField>
+
+        {/* Right-aligned section */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2, ml: 'auto' }}>
+          {user ? (
             <>
+              {/* Wishlist with badge */}
+              <IconButton
+                onClick={() => navigate('/wishlist')}
+                color="inherit"
+                sx={{ flexShrink: 1 }}
+              >
+                <Badge badgeContent={wishlistItems.length} color="error">
+                  <Favorite sx={{ color: 'white' }} />
+                </Badge>
+              </IconButton>
+
+              {/* Items */}
               <Button
-                component={Link}
-                to="/items/add"
+                onClick={handleItemMenuOpen}
                 variant="outlined"
                 color="inherit"
-                sx={{ textTransform: 'none', color: 'white', flexShrink: 0 }}
+                sx={{ textTransform: 'none', color: 'white', flexShrink: 1, minWidth: 60 }}
               >
-                Add Item
+                Items
               </Button>
+              <Menu anchorEl={itemMenuEl} open={Boolean(itemMenuEl)} onClose={handleItemMenuClose}>
+                <MenuItem onClick={() => { handleItemMenuClose(); navigate('/items/add'); }}>
+                  Add Item
+                </MenuItem>
+                <MenuItem onClick={() => { handleItemMenuClose(); navigate('/my-items'); }}>
+                  My Items
+                </MenuItem>
+              </Menu>
 
+              {/* Loans */}
               <Button
                 onClick={handleLoanMenuOpen}
                 variant="outlined"
                 color="inherit"
-                sx={{ textTransform: 'none', color: 'white', flexShrink: 0 }}
+                sx={{ textTransform: 'none', color: 'white', flexShrink: 1, minWidth: 60 }}
               >
                 Loans
               </Button>
-
-              {/* Loan Menu */}
-              <Menu
-                anchorEl={loanMenuEl}
-                open={Boolean(loanMenuEl)}
-                onClose={handleLoanMenuClose}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-              >
+              <Menu anchorEl={loanMenuEl} open={Boolean(loanMenuEl)} onClose={handleLoanMenuClose}>
                 <MenuItem onClick={() => { handleLoanMenuClose(); navigate('/my-loans'); }}>
                   My Loans
                 </MenuItem>
@@ -181,16 +187,9 @@ const Navbar = () => {
                   Loan Requests
                 </MenuItem>
               </Menu>
-            </>
-          )}
 
-          {!user ? (
-            <Button color="inherit" component={Link} to="/login" sx={{ flexShrink: 0 }}>
-              Login
-            </Button>
-          ) : (
-            <>
-              <IconButton color="inherit" onClick={handleMenuOpen} sx={{ flexShrink: 0 }}>
+              {/* Avatar Menu */}
+              <IconButton color="inherit" onClick={handleMenuOpen} sx={{ flexShrink: 1 }}>
                 <Avatar
                   sx={{
                     width: 32,
@@ -220,7 +219,7 @@ const Navbar = () => {
                   <MenuItem onClick={() => { handleMenuClose(); navigate('/profile'); }}>
                     <PersonIcon fontSize="small" sx={{ mr: 1 }} /> Profile
                   </MenuItem>
-                  <MenuItem onClick={() => { handleMenuClose(); navigate('/reset-password'); }}>
+                  <MenuItem onClick={() => { handleMenuClose(); navigate('/change-password'); }}>
                     <LockReset fontSize="small" sx={{ mr: 1 }} /> Reset Password
                   </MenuItem>
                   <MenuItem onClick={handleLogout} disabled={isLoggingOut}>
@@ -238,10 +237,18 @@ const Navbar = () => {
                 </MenuList>
               </Menu>
             </>
+          ) : (
+            <Button
+              color="white"
+              component={Link}
+              to="/login"
+              sx={{ flexShrink: 1, minWidth: 60, color: 'white' }}
+            >
+              Login
+            </Button>
           )}
         </Box>
-      </Toolbar>
-
+      </Box>
     </AppBar>
   );
 };

@@ -1,35 +1,57 @@
 import React from 'react';
-import { useGetItemReviewsQuery } from '../features/review/reviewApi';
-import { Box, Typography, Rating, CircularProgress, Divider } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Rating,
+  Divider,
+  Avatar,
+} from '@mui/material';
+import { formatDistanceToNow } from 'date-fns';
 
-const ReviewList = ({ itemId }) => {
-  const { data: reviews, isLoading, isError } = useGetItemReviewsQuery(itemId);
+const ReviewList = ({ reviews = [] }) => {
+  if (!Array.isArray(reviews)) {
+    return <Typography color="error">Invalid reviews data.</Typography>;
+  }
 
-  if (isLoading) return <CircularProgress />;
-  if (isError) return <Typography color="error">Failed to load reviews.</Typography>;
+  if (reviews.length === 0) {
+    return <Typography color="text.secondary">No reviews yet.</Typography>;
+  }
 
   return (
-    <Box sx={{ mt: 4 }}>
-      <Typography variant="h6">Reviews</Typography>
-      {reviews.length === 0 ? (
-        <Typography>No reviews yet.</Typography>
-      ) : (
-        reviews.map((review) => (
-          <Box key={review._id} sx={{ my: 2 }}>
-            <Typography variant="subtitle2">{review.reviewer.name}</Typography>
-            <Rating value={review.rating} readOnly />
-            {review.comment && (
-              <Typography variant="body2" sx={{ mt: 0.5 }}>
-                {review.comment}
+    <Box>
+      <Divider sx={{ mb: 2 }} />
+
+      {reviews.map((review, index) => (
+        <Box key={review._id || index} sx={{ mb: 3 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+            <Avatar sx={{ mr: 2 }}>
+              {review.reviewer?.name?.charAt(0).toUpperCase() || '?'}
+            </Avatar>
+            <Box>
+              <Typography variant="subtitle1" fontWeight="bold">
+                {review.reviewer?.name || 'Anonymous'}
               </Typography>
-            )}
-            <Typography variant="caption" color="text.secondary">
-              {new Date(review.createdAt).toLocaleDateString()}
-            </Typography>
-            <Divider sx={{ mt: 1 }} />
+              <Typography variant="caption" color="text.secondary">
+                {formatDistanceToNow(new Date(review.createdAt), { addSuffix: true })}
+              </Typography>
+            </Box>
           </Box>
-        ))
-      )}
+
+          <Rating
+            value={review.rating}
+            readOnly
+            size="small"
+            sx={{ mb: 1 }}
+          />
+
+          <Typography variant="body2" color="text.primary" sx={{ ml: 0.5 }}>
+            {review.comment}
+          </Typography>
+
+          
+          {index !== reviews.length - 1 && <Divider sx={{ mt: 2 }} />}
+        </Box>
+      ))}
     </Box>
   );
 };
