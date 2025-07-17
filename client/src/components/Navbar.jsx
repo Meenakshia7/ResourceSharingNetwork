@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import {
   AppBar,
@@ -109,7 +108,7 @@ const Navbar = () => {
             bgcolor: 'white',
             borderRadius: 1,
             minWidth: 80,
-            maxWidth: 350,
+            maxWidth: 150,
             flexShrink: 1,
             flexGrow: 1,
           }}
@@ -137,11 +136,11 @@ const Navbar = () => {
           ))}
         </TextField>
 
-        {/* Right-aligned section */}
+       
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2, ml: 'auto' }}>
           {user ? (
             <>
-              {/* Wishlist with badge */}
+              {/* Wishlist */}
               <IconButton
                 onClick={() => navigate('/wishlist')}
                 color="inherit"

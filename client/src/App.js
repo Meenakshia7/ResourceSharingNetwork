@@ -1,4 +1,3 @@
-
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -13,17 +12,13 @@ import MyItemsPage from './pages/MyItemsPage';
 import EditItemPage from './pages/EditItemPage';
 import ProfilePage from './pages/ProfilePage';
 import ChangePasswordPage from './pages/ChangePasswordPage';
-import Footer from './components/Footer'; // Importing the Footer component
+import Footer from './components/Footer';
 import WishlistPage from './pages/WishlistPage';
-
-
-// Items module
 import ItemListPage from './pages/ItemListPage';
 import AddItemPage from './pages/AddItemPage';
 import ItemDetailPage from './pages/ItemDetailPage';
 
-import { Box } from '@mui/material'; // for layout
-
+import { Box } from '@mui/material'; 
 function AppContent() {
   const location = useLocation();
   const hideNavbar = ['/login', '/register', '/forgot-password'].includes(location.pathname);
@@ -78,9 +73,7 @@ function AppContent() {
           {/* Public Landing Page */}
           <Route path="/" element={<Navigate to="/items" replace />} />
           <Route path="/items" element={<ItemListPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/change-password" element={<ChangePasswordPage />} />
-          <Route path="/wishlist" element={<WishlistPage />} />
+          
 
           {/* Protected Routes */}
           <Route
@@ -117,6 +110,9 @@ function AppContent() {
           />
           <Route path="/my-loans" element={<ProtectedRoute><MyLoansPage /></ProtectedRoute>} />
           <Route path="/loan-requests" element={<ProtectedRoute><RequestsToMePage /></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+          <Route path="/change-password" element={<ProtectedRoute><ChangePasswordPage /></ProtectedRoute>} />
+          <Route path="/wishlist" element={<ProtectedRoute><WishlistPage /></ProtectedRoute>} />
         </Routes>
       </Box>
 

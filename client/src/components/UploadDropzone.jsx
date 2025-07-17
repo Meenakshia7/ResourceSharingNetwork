@@ -1,4 +1,3 @@
-
 import React, { useRef } from 'react';
 import { Box, Typography, IconButton } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
@@ -16,7 +15,7 @@ const UploadDropzone = ({ onChange, value = [] }) => {
         body: formData,
       });
       const data = await res.json();
-      return data.path; // e.g., /uploads/filename.jpg
+      return data.path; 
     } catch (err) {
       console.error('Upload failed:', err);
       return null;
@@ -99,7 +98,7 @@ const UploadDropzone = ({ onChange, value = [] }) => {
             }}
           >
             <img
-              src={`http://localhost:5000${url}`} // ✅ use server-based image
+              src={`http://localhost:5000${url}`} 
               alt={`preview-${index}`}
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             />

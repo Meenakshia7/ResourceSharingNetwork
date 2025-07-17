@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import {
   Box,
@@ -16,7 +15,7 @@ import toast from 'react-hot-toast';
 import { useDeleteItemMutation, useGetItemsQuery } from '../features/items/itemApi';
 import { useSelector, useDispatch } from 'react-redux';
 import { itemApi } from '../features/items/itemApi';
-import ConfirmDialog from '../components/ConfirmDialog'; // ✅ Import ConfirmDialog
+import ConfirmDialog from '../components/ConfirmDialog'; 
 
 const ITEMS_PER_PAGE = 4;
 
@@ -60,7 +59,6 @@ const MyItemsPage = () => {
 
   return (
     <Box sx={{ p: 4 }}>
-      {/* Back Arrow */}
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
         <IconButton onClick={() => navigate('/')}>
           <ArrowBack />
@@ -160,7 +158,7 @@ const MyItemsPage = () => {
         </Box>
       )}
 
-      {/* ✅ Confirm Dialog */}
+      
       <ConfirmDialog
         open={confirmOpen}
         onClose={() => setConfirmOpen(false)}

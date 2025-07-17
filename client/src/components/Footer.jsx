@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {
   Box,
@@ -12,7 +11,7 @@ import {
 import InstagramIcon from '@mui/icons-material/Instagram';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import YouTubeIcon from '@mui/icons-material/YouTube';
-import TwitterIcon from '@mui/icons-material/X'; // or TwitterIcon
+import TwitterIcon from '@mui/icons-material/X'; 
 
 const Footer = () => {
   return (
@@ -27,7 +26,7 @@ const Footer = () => {
         fontFamily: 'inherit',
       }}
     >
-      {/* Top Grid */}
+    
       <Grid container spacing={4}>
         
 
@@ -76,10 +75,10 @@ const Footer = () => {
         </Grid>
       </Grid>
 
-      {/* Spacing instead of divider */}
+      
       <Box sx={{ mt: 4 }} />
 
-      {/* Bottom section */}
+      
       <Grid container justifyContent="space-between" alignItems="center">
         <Grid item xs={12} sm={6}>
           <Typography

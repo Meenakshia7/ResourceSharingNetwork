@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import {
   Box,
@@ -78,7 +77,7 @@ const ItemListPage = () => {
 
   return (
     <Box sx={{ p: 3, bgcolor: 'background.default', minHeight: '100vh' }}>
-      {/* Feature Highlight Slider with Images */}
+      {/*  Highlight Slider with Images */}
       <Box sx={{ mb: 4 }}>
         <Slider {...sliderSettings}>
           {highlightCards.map((feature, i) => (

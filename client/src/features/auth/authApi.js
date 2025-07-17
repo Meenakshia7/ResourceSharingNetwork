@@ -1,4 +1,3 @@
-
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { setCredentials } from './authSlice';
 
@@ -50,5 +49,5 @@ export const authApi = createApi({
 export const {
   useLoginMutation,
   useRegisterMutation,
-  useChangePasswordMutation, // ✅ export the new mutation
+  useChangePasswordMutation, 
 } = authApi;

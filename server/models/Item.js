@@ -1,4 +1,3 @@
-
 const mongoose = require('mongoose');
 
 const itemSchema = new mongoose.Schema({
@@ -15,7 +14,7 @@ const itemSchema = new mongoose.Schema({
   toObject: { virtuals: true },
 });
 
-// ✅ Virtual field for reviews
+//  Virtual field for reviews
 itemSchema.virtual('reviews', {
   ref: 'Review',
   localField: '_id',

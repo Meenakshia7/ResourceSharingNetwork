@@ -6,7 +6,6 @@ import {
   Avatar,
   Typography,
   Divider,
-  Button,
   IconButton,
 } from '@mui/material';
 import { useSelector } from 'react-redux';
@@ -39,7 +38,7 @@ const ProfilePage = () => {
         position: 'relative',
       }}
     >
-      {/* Top-left back arrow */}
+      {/*back arrow */}
       <IconButton
   onClick={() => navigate('/')}
   sx={{

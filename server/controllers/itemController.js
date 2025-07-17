@@ -1,4 +1,3 @@
-
 const Item = require('../models/Item');
 
 
@@ -19,7 +18,7 @@ exports.createItem = async (req, res) => {
 exports.getAllItems = async (req, res) => {
   try {
     const items = await Item.find()
-      .populate('owner', 'name') // optional, if you need owner name
+      .populate('owner', 'name') 
       .populate({
         path: 'reviews',
         select: 'rating comment reviewer createdAt',
@@ -90,7 +89,6 @@ exports.deleteItem = async (req, res) => {
     res.status(500).json({ message: 'Failed to delete item', error: error.message });
   }
 };
-
 
 
 // Get logged-in user's items

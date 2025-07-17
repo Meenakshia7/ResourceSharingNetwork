@@ -1,5 +1,3 @@
-
-
 const Review = require('../models/Review');
 const Loan = require('../models/Loan');
 
